@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Programming Study</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
+        canvas { background: #000; width: 320px; height: 288px; image-rendering: pixelated; border: 5px solid #333; }
+        .controls { margin-top: 20px; padding: 10px; background: white; display: inline-block; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Study: JavaScript WebAssembly Test</h1>
+    <p>Select a ROM file (.gb / .gbc) to test the emulator engine.</p>
+    
+    <!-- ゲーム画面 -->
+    <canvas id="emulator"></canvas><br>
+    
+    <div class="controls">
+        <input type="file" id="file-input" accept=".gb,.gbc">
+        <p>Controls: Arrow keys (D-pad), Z (A), X (B), Enter (Start), Shift (Select)</p>
+    </div>
+
+    <!-- Binjgbのエミュレータ本体を読み込む（デモ用URLから拝借） -->
+    <script src="https://binji.github.io"></script>
+
+    <script>
+        const canvas = document.getElementById('emulator');
+        const fileInput = document.getElementById('file-input');
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const arrayBuffer = await file.arrayBuffer();
+            const romData = new Uint8Array(arrayBuffer);
+
+            // エミュレータの初期化と実行（Binjgbの基本API）
+            // ここで読み込んだROMを動かす処理が走ります
+            try {
+                const emulator = await Binjgb.start(canvas, romData);
+                console.log("Emulator started!");
+            } catch (err) {
+                alert("Error: 読み込みに失敗しました。対応する形式か確認してください。");
+            }
+        });
+    </script>
+</body>
+</html>
